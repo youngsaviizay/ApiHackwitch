@@ -10,14 +10,14 @@ import UIKit
 
 class ArticlesViewController: UITableViewController {
     
-    
+    var sources = [String: String]()
     var articles = [[String: String]]()
     var apiKey = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = "News Sources"
-        let query = "https://newsapi.org/v1/sources?language=en&country=us&apiKey=\(apiKey)"
+        self.title = "Top Stories"
+        let query = " https://newsapi.org/v1/articles?source=\(sources["id"]!)&apiKey=\(apiKey)"
         DispatchQueue.global(qos: .userInitiated).async {
             [unowned self] in
             if let url = URL(string: query) {
@@ -34,20 +34,20 @@ class ArticlesViewController: UITableViewController {
     }
     
     func parse(json: JSON) {
-        for result in json["sources"].arrayValue {
-            let id = result["id"].stringValue
-            let name = result["name"].stringValue
+        for result in json["articles"].arrayValue {
+            let title = result["title"].stringValue
             let description = result["description"].stringValue
-            let source = ["id": id, "name": name, "description": description]
-            articles.append(source)
-            tableView.reloadData()
+            let url = result["url"].stringValue
+            let article = ["title": title, "description": description,
+                           "url": url]
+            articles.append(article)
+        }
             DispatchQueue.main.async {
                 [unowned self] in
                 self.tableView.reloadData()
             }
-            
         }
-    }
+
     
     func loadError() {
         let alert = UIAlertController(title: "Loading Error",message: "There was a problem loading the newsfeed",
@@ -56,14 +56,14 @@ class ArticlesViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sources.count
+        return articles.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let source = sources[indexPath.row]
-        cell.textLabel?.text = source["name"]
-        cell.detailTextLabel?.text = source["description"]
+        let article = articles[indexPath.row]
+        cell.textLabel?.text = article["title"]
+        cell.detailTextLabel?.text = article["description"]
         return cell
     }
 }

@@ -40,7 +40,6 @@ class SourcesViewController: UITableViewController {
             let description = result["description"].stringValue
             let source = ["id": id, "name": name, "description": description]
             sources.append(source)
-            tableView.reloadData()
             DispatchQueue.main.async {
                 [unowned self] in
                 self.tableView.reloadData()
