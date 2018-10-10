@@ -10,14 +10,14 @@ import UIKit
 
 class ArticlesViewController: UITableViewController {
     
-    var sources = [String: String]()
+    var source = [String: String]()
     var articles = [[String: String]]()
     var apiKey = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Top Stories"
-        let query = " https://newsapi.org/v1/articles?source=\(sources["id"]!)&apiKey=\(apiKey)"
+        let query = " https://newsapi.org/v1/articles?source=\(source["id"]!)&apiKey=\(apiKey)"
         DispatchQueue.global(qos: .userInitiated).async {
             [unowned self] in
             if let url = URL(string: query) {
@@ -42,18 +42,20 @@ class ArticlesViewController: UITableViewController {
                            "url": url]
             articles.append(article)
         }
-            DispatchQueue.main.async {
-                [unowned self] in
-                self.tableView.reloadData()
-            }
+        DispatchQueue.main.async {
+            [unowned self] in
+            self.tableView.reloadData()
         }
-
+    }
     
     func loadError() {
-        let alert = UIAlertController(title: "Loading Error",message: "There was a problem loading the newsfeed",
-                                      preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "OK",style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            [unowned self] in
+            let alert = UIAlertController(title: "Loading Error",message: "There was a problem loading the newsfeed",
+                                          preferredStyle: .actionSheet)
+            alert.addAction(UIAlertAction(title: "OK",style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
@@ -67,11 +69,6 @@ class ArticlesViewController: UITableViewController {
         return cell
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let dvc = segue.destination as! ArticlesViewController
-        let index = tableView.indexPathForSelectedRow?.row
-        dvc.source = sources[index!]
-        dvc.apiKey = apiKey
-    }
+    
 }
 
