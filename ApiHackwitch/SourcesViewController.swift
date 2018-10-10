@@ -14,6 +14,7 @@ class SourcesViewController: UITableViewController {
     var sources = [[String: String]]()
     var apiKey = "679376b10aad42019ff49513ad555602"
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "News Sources"
@@ -33,6 +34,9 @@ class SourcesViewController: UITableViewController {
     }
     }
     
+    @IBAction func onTappedDoneButton(_ sender: UIBarButtonItem) {
+        exit(0)
+    }
     func parse(json: JSON) {
         for result in json["sources"].arrayValue {
             let id = result["id"].stringValue
@@ -59,7 +63,7 @@ class SourcesViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ID Cell", for: indexPath)
         let source = sources[indexPath.row]
         cell.textLabel?.text = source["name"]
         cell.detailTextLabel?.text = source["description"]

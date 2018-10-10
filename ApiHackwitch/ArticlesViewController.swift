@@ -60,10 +60,18 @@ class ArticlesViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ID Cell", for: indexPath)
         let article = articles[indexPath.row]
         cell.textLabel?.text = article["title"]
         cell.detailTextLabel?.text = article["description"]
         return cell
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let dvc = segue.destination as! ArticlesViewController
+        let index = tableView.indexPathForSelectedRow?.row
+        dvc.source = sources[index!]
+        dvc.apiKey = apiKey
+    }
 }
+
