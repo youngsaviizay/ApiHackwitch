@@ -21,22 +21,23 @@ class SourcesViewController: UITableViewController {
         let query = "https://newsapi.org/v1/sources?language=en&country=us&apiKey=\(apiKey)"
         DispatchQueue.global(qos: .userInitiated).async {
             [unowned self] in
-        if let url = URL(string: query) {
-            if let data = try? Data(contentsOf: url) {
-                let json = try! JSON(data: data)
-                if json["status"] == "ok" {
-                    self.parse(json: json)
-                    return
+            if let url = URL(string: query) {
+                if let data = try? Data(contentsOf: url) {
+                    let json = try! JSON(data: data)
+                    if json["status"] == "ok" {
+                        self.parse(json: json)
+                        return
+                    }
                 }
             }
+            self.loadError()
         }
-        self.loadError()
-    }
     }
     
     @IBAction func onTappedDoneButton(_ sender: UIBarButtonItem) {
         exit(0)
     }
+    
     func parse(json: JSON) {
         for result in json["sources"].arrayValue {
             let id = result["id"].stringValue
@@ -47,14 +48,14 @@ class SourcesViewController: UITableViewController {
             DispatchQueue.main.async {
                 [unowned self] in
                 self.tableView.reloadData()
-           }
+            }
             
         }
     }
     
     func loadError() {
         let alert = UIAlertController(title: "Loading Error",message: "There was a problem loading the newsfeed",
-            preferredStyle: .actionSheet)
+                                      preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "OK",style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
     }

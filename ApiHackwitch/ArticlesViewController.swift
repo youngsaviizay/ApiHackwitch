@@ -17,7 +17,7 @@ class ArticlesViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Top Stories"
-        let query = " https://newsapi.org/v1/articles?source=\(source["id"]!)&apiKey=\(apiKey)"
+        let query = "https://newsapi.org/v1/articles?source=\(source["id"]!)&apiKey=\(apiKey)"
         DispatchQueue.global(qos: .userInitiated).async {
             [unowned self] in
             if let url = URL(string: query) {
@@ -57,6 +57,7 @@ class ArticlesViewController: UITableViewController {
             self.present(alert, animated: true, completion: nil)
         }
     }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return articles.count
     }
